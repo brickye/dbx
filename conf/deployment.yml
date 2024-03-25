@@ -1,0 +1,23 @@
+custom:
+  job-cluster-properties: &job-cluster-properties
+    spark_version: "10.4.x-cpu-ml-scala2.12"
+    node_type_id: "i3.xlarge"
+    aws_attributes:
+      first_on_demand: 0
+      availability: "SPOT"
+  autoscaling-properties: &autoscaling-properties
+    autoscale:
+      min_workers: 1
+      max_workers: 3
+  autoscaling-job_cluster: &autoscaling-job-cluster
+    new_cluster:
+      <<: 
+        - *job-cluster-properties
+        - *autoscaling-properties
+environments:
+  default:
+    jobs:
+      - name: "covid_trends_spark"
+        existing_cluster_name: "Shared Autoscaling Americas cluster" 
+        spark_python_task:
+          python_file: "file://covid_trends_spark.py"
